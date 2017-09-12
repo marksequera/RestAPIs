@@ -4,29 +4,17 @@ var routes = function (Book) {
   //this.Book = Book;
   var bookRouter = express.Router();
 
+  var bookController = require('../Controllers/bookController')(Book);
+
   bookRouter.route('/')
     .post(function (req, res) {
-      var book = new Book(req.body);
-
-      book.save();
-
-      res.status(201).send(book);
+      bookController.post;
     })
     .get(function (req, res) {
-      var query = {};
-      if (req.query.genre) {
-        query.genre = req.query.genre;
-      }
-
-      Book.find(query, function (err, books) {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          res.json(books);
-        }
-      });
+      bookController.get;
     });
 
+  // Middleware
   bookRouter.use('/:bookId', function (req, res, next) {
     Book.findById(req.params.bookId, function (err, book) {
       if (err) {
@@ -40,6 +28,7 @@ var routes = function (Book) {
     });
   });
 
+  // RESTful APIs
   bookRouter.route('/:bookId')
     .put(function (req, res) {
       req.book.title = req.body.title;
@@ -72,7 +61,7 @@ var routes = function (Book) {
       });
     })
 
-    .delete(function(req, res) {
+    .delete(function (req, res) {
       req.book.remove(function (err) {
         if (err) {
           res.status(500).send(err);
